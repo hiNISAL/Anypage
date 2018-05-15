@@ -17,6 +17,7 @@ const writeFile = promisify(fs.writeFile);
 const rename = promisify(fs.rename);
 
 const dbPath = resolve(__dirname, '../../db/sites.json');
+const keysPath = resolve(__dirname, '../../db/keys.json');
 
 let adminRouter = new Router({
   prefix: '/admin'
@@ -94,7 +95,6 @@ adminRouter.post('/create/site', isLoged, async ctx => {
 
   let siteConfig = {};
   try {
-    console.log(fields)
     if (fields.useConfig) {
       siteConfig = JSON.parse(await readFile(`${unzipDir}/site.json`, 'utf-8'));
       await unlink(`${unzipDir}/site.json`);
@@ -112,13 +112,21 @@ adminRouter.post('/create/site', isLoged, async ctx => {
 
     if (siteConfig.title === '') siteConfig.title = newFileName;
     if (siteConfig.route === '') siteConfig.route = newFileName;
-    if (siteConfig.cover === '') siteConfig.cover = '/publicresource/cover/loading.gif';
-
-    // fs.writeFile(resolve(__dirname, `${unzipDir}/site.json`), JSON.stringify(siteConfig));
+    if (siteConfig.cover === '') siteConfig.cover = '/controller/cover/loading.gif';
   } catch (e) {
     await rollBack(filePath, newFileName);    
     ctx.body = getResData({}, '配置文件不存在');
     console.log(e);
+    return;
+  }
+
+  if (siteConfig.route.startsWith('/admin') || 
+      siteConfig.route.startsWith('/common') || 
+      siteConfig.route.startsWith('/login') ||
+      siteConfig.route.startsWith('/controller')) 
+  {
+    await rollBack(filePath, newFileName);    
+    ctx.body = getResData({}, '该路由已被默认路由占用');
     return;
   }
 
@@ -162,6 +170,8 @@ adminRouter.post('/create/site', isLoged, async ctx => {
     rootPath: siteConfig.route
   }));
 
+  console.log(ctx.app);
+
   ctx.body = getResData({ route: siteConfig.route }, '添加站点成功', true);
 });
 
@@ -191,7 +201,85 @@ adminRouter.post('/delete/site', isLoged, async ctx => {
     ctx.body = getResData({}, '删除失败');
   }
 
-  deleteFolder(resolve(__dirname, `../../sites/${ fields.id }`))
+  deleteFolder(resolve(__dirname, `../../sites/${ fields.id }`));
+
+  ctx.body = getResData({}, '删除成功', true);
+});
+
+adminRouter.post('/get/keys', isLoged, async ctx => {
+  try {
+    const keys = JSON.parse(await readFile(keysPath), 'utf-8');
+
+    ctx.body = getResData(keys, '获取成功', true);
+  } catch (e) {
+    ctx.body = getResData({}, '获取失败');
+  }
+});
+
+adminRouter.post('/add/key', isLoged, async ctx => {
+  const key = ctx.request.body.key;
+
+  if (key === '') {
+    ctx.body = getResData({}, 'key不能为空');
+    return;
+  }
+
+  let keys = {};
+  try {
+    keys = JSON.parse(await readFile(keysPath), 'utf-8');
+  } catch (e) {
+    ctx.body = getResData({}, '添加失败');
+    return;
+  }
+
+  if (keys.keys.some(keye => keye === key)) {    
+    ctx.body = getResData({}, '该key已存在');
+    return;
+  }
+
+  keys.keys.push(key);
+
+  try {
+    fs.writeFile(keysPath, JSON.stringify(keys));
+  } catch (e) {
+    ctx.body = getResData({}, '添加失败');
+    return;
+  }
+  
+  ctx.body = getResData({}, '添加成功', true);
+});
+
+adminRouter.post('/delete/key', isLoged, async ctx => {
+  const key = ctx.request.body.key;
+
+  if (key === '') {
+    ctx.body = getResData({}, 'key不能为空');
+    return;
+  }
+
+  let keys = {};
+  try {
+    keys = JSON.parse(await readFile(keysPath), 'utf-8');
+  } catch (e) {
+    ctx.body = getResData({}, '添加失败');
+    return;
+  }
+
+  const index = keys.keys.findIndex(keye => keye === key);
+
+  if (index === -1) {
+    ctx.body = getResData({}, '该key不存在');
+    return;    
+  }
+
+  keys.keys.splice(index, 1);
+
+  try {
+    fs.writeFile(keysPath, JSON.stringify(keys));
+  } catch (e) {
+    ctx.body = getResData({}, '删除失败');
+    return;
+  }
 
   ctx.body = getResData({}, '删除成功', true);
 });

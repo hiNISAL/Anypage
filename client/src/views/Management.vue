@@ -40,7 +40,7 @@ export default {
   methods: {
     async getSites() {
       try {
-        const { data: { data, msg, status } } = await axios.get('/common/sites');
+        const { data: { data, msg, status } } = await axios.post('/common/sites');
 
         if (!status) {
           this.warnning(msg);

@@ -43,7 +43,7 @@ export default {
     },
     async getSites() {
       try {
-        const { data: { data, msg, status } } = await axios.get('/common/sites');
+        const { data: { data, msg, status } } = await axios.post('/common/sites');
 
         if (!status) {
           this.warnning(msg);
@@ -61,7 +61,7 @@ export default {
       }
     },
     go(route) {
-      location.href = route;
+      open(route);
     },
     warnning(text) {
       this.$notify({
@@ -81,6 +81,7 @@ export default {
   #sites {
     width: 1200px;
     margin: 0 auto;
+    position: absolute;
     .time {
       font-size: 13px;
       color: #999;

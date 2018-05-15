@@ -1,12 +1,13 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Login from '@/views/Login.vue'
-import BackStage from '@/views/Backstage'
-import Upload from '@/views/Upload'
-import Management from '@/views/Management'
-import Sites from '@/views/Sites'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Login from '@/views/Login.vue';
+import BackStage from '@/views/Backstage';
+import Upload from '@/views/Upload';
+import Management from '@/views/Management';
+import Sites from '@/views/Sites';
+import Keys from '@/views/Keys';
 
-Vue.use(Router)
+Vue.use(Router);
 
 export default new Router({
   routes: [
@@ -39,8 +40,13 @@ export default new Router({
           path: 'management',
           name: 'Management',
           component: Management
+        },
+        {
+          path: 'keys',
+          name: 'Keys',
+          component: Keys
         }
       ]
     }
   ]
-})
+});

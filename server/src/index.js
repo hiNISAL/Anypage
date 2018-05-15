@@ -22,6 +22,15 @@ app.use(Body({ multipart: true }));
 
 statics(app);
 
+app.use(async (ctx, next) => {
+  if (ctx.request.path === '/') {
+    this.status = 301;
+    ctx.response.redirect('/controller');
+    return;
+  }
+  await next();
+});
+
 app
   .use(routerLogin.routes())
   .use(routerLogin.allowedMethods())

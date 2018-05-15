@@ -3,8 +3,9 @@
     <nav>
       <el-menu :default-active="active" class="el-menu-demo" mode="horizontal">
         <el-menu-item index="-1" @click="to('Sites')"><div class="title">Any Page</div></el-menu-item>
-        <el-menu-item index="1" @click="to('Upload')">添加站点</el-menu-item>
-        <el-menu-item index="2" @click="to('Management')">站点管理</el-menu-item>
+        <el-menu-item index="Upload" @click="to('Upload')">添加站点</el-menu-item>
+        <el-menu-item index="Management" @click="to('Management')">站点管理</el-menu-item>
+        <el-menu-item index="Keys" @click="to('Keys')">密钥管理</el-menu-item>
       </el-menu>
     </nav>
     <div id="container">
@@ -28,7 +29,7 @@ export default {
     }
   },
   mounted() {
-    this.active = this.$route.name === 'Upload' ? '1' : '2';
+    this.active = this.$route.name;
   }
 }
 </script>

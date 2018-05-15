@@ -10,6 +10,14 @@ let userRouter = new Router({
 });
 
 userRouter.post('/', async ctx => {
+
+  try {
+    const keys = JSON.parse(await readFile(resolve(__dirname, '../../db/keys.json'), 'utf-8'));
+  } catch(e) {
+    ctx.body = {msg: '未知错误', status: false, data: {}};
+    return;
+  }
+
   const fields = ctx.request.body;
 
   if (ctx.session.anypage) {
@@ -17,9 +25,9 @@ userRouter.post('/', async ctx => {
     return;
   }
 
-  if (fields.key === 'aabbcc') {
+  if (keys.keys.some( key => key === fields.key )) {
     ctx.session.anypage = {
-      uname: 'key'
+      uname: String(Math.random() * 1000)
     }
     ctx.body = {msg: '登陆成功', status: true, data: {}};
     return;

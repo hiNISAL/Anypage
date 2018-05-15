@@ -48,7 +48,7 @@ export default {
     },
     async checkLogin() {
       try {
-        const { status } = await axios.post('/login/check');
+        const { data: {status} } = await axios.post('/login/check');
 
         if (status) {
           this.$router.push('/backstage');
