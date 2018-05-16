@@ -11,9 +11,11 @@ let userRouter = new Router({
 
 userRouter.post('/', async ctx => {
 
+  let keys = {};
   try {
-    const keys = JSON.parse(await readFile(resolve(__dirname, '../../db/keys.json'), 'utf-8'));
+    keys = JSON.parse(await readFile(resolve(__dirname, '../../db/keys.json'), 'utf-8'));
   } catch(e) {
+    console.log(e);
     ctx.body = {msg: '未知错误', status: false, data: {}};
     return;
   }

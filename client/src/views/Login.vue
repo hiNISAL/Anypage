@@ -5,7 +5,7 @@
     <el-row>
       <el-col :span="19">
         <div>
-          <el-input placeholder="key" v-model="key"></el-input>
+          <el-input placeholder="key" v-model="key" @keyup.native.enter="login"></el-input>
         </div>
       </el-col>
       <el-col :span="5">
