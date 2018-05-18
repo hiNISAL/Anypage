@@ -78,10 +78,28 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  #toLogin {
+    position: fixed;
+    right: 40px;
+    bottom: 50px;
+    line-height: 50px;
+    width: 50px;
+    background: #48b5e7;
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+
+    &:active {
+      background: #1c84b4;
+    }
+  }
+
   #sites {
     width: 1200px;
     margin: 0 auto;
-    position: absolute;
+    
     .time {
       font-size: 13px;
       color: #999;
@@ -119,24 +137,6 @@ export default {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-    }
-
-    #toLogin {
-      position: fixed;
-      right: 40px;
-      bottom: 50px;
-      line-height: 50px;
-      width: 50px;
-      background: #48b5e7;
-      border-radius: 50%;
-      text-align: center;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-
-      &:active {
-        background: #1c84b4;
-      }
     }
   }
 </style>
